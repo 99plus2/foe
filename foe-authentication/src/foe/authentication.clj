@@ -1,8 +1,6 @@
 (ns foe.authentication
   (:require [ring.util.response :as resp]))
 
-(declare ^{:dynamic true} *user*)
-
 (defn- respond-401 []
   {:status 401
    :body   "Unauthorized"})
@@ -23,11 +21,10 @@
              (contains? user :roles))
         user)))
 
-(defn wrap-auth [handler auth-fn & {:keys [allow-anonymous redirect-url]
-                                    :or {allow-anonymous false redirect-url nil}}]
+(defn wrap-authentication [handler auth-fn & {:keys [allow-anonymous redirect-url]
+                                              :or {allow-anonymous false redirect-url nil}}]
   (fn [request]
     (let [user (auth-fn request)]
       (if user
-        (binding [*user* user]
-          (handler (assoc request :user user)))
+        (handler (assoc request :user user))
         (redirect-or-401 handler request allow-anonymous redirect-url)))))

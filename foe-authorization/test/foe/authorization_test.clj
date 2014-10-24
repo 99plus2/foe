@@ -22,7 +22,7 @@
           "it works!"
           {:status 403 :body "Forbidden"}))
   (GET "/noworks" []
-        (if (authz/is-in-role? "user" authn/*user*)
+        (if (authz/is-in-role? "user" authz/*user*)
           "it works!"
           {:status 403 :body "Forbidden"}))
   (GET "/notauthorized" []
@@ -30,7 +30,7 @@
 
 (def app
   (-> app-routes
-      (authn/wrap-auth fake-auth :allow-anonymous true)))
+      (authn/wrap-authentication fake-auth :allow-anonymous true)))
 
 (deftest test-app
   (testing "Return 200"
