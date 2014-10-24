@@ -1,5 +1,6 @@
-(ns foe.authorization
-  (:require [foe.authentication :as authn]))
+(ns foe.authorization)
+
+(declare ^{:dynamic true} *user*)
 
 (defn- list-contains? [coll value]
   (let [s (seq coll)]
@@ -16,15 +17,14 @@
   (if (list-contains? (:roles user) role)
     true))
 
-(defn wrap-authorize [handler role]
+(defn wrap-authorize [handler]
   (fn [request]
     (let [user (:user request)]
-      (if (is-in-role? role authn/*user*)
-        (handler request)
-        (respond-403)))))
+      (binding [*user* user]
+       (handler request)))))
 
 (defn require-authorization
   [role body]
-  (if (is-in-role? role authn/*user*)
+  (if (is-in-role? role *user*)
           (body)
           (respond-403)))
