@@ -9,7 +9,7 @@ auth-specific libraries, incuding foe-oauth2.
 ## Usage
 
 To install:
-    lein sub install
+    lein sub install && lein install
 
 To test:
     lein sub test
