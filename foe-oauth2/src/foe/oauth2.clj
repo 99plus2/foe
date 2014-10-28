@@ -62,6 +62,5 @@
   "Parses the response URL that issues a code.
    See: http://tools.ietf.org/html/rfc6749#section-4.1.2"
   [url]
-  (let [parsed-url   (client/parse-url url)
-        query-string (walk/keywordize-keys (codec/form-decode (:query-string parsed-url)))]
-    query-string))
+  (let [parsed-url (client/parse-url url)]
+    (walk/keywordize-keys (codec/form-decode (:query-string parsed-url)))))
