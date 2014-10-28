@@ -1,4 +1,4 @@
-(defproject foe/foe-authentication "0.0.3"
+(defproject foe/foe-authentication "0.0.4"
   :description "foe-authentication: Flexible authentication"
   :url "http://standardtreasury.com/foe"
   :license {:name "Eclipse Public License"

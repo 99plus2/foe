@@ -1,4 +1,4 @@
-(defproject foe/foe-authorization "0.0.3"
+(defproject foe/foe-authorization "0.0.4"
   :description "foe-authorization: Flexible authorization built on foe-authentication."
   :url "http://standardtreasury.com/foe"
   :license {:name "Eclipse Public License"
@@ -8,4 +8,4 @@
   :profiles
   {:dev {:dependencies [[compojure "1.1.8"]
                         [ring-mock "0.1.5"]
-                        [foe/foe-authentication "0.0.3"]]}})
+                        [foe/foe-authentication "0.0.4"]]}})

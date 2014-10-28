@@ -1,4 +1,4 @@
-(defproject foe "0.0.3"
+(defproject foe "0.0.4"
   :description "Foe: Flexible authentication and authorization"
   :url "http://standardtreasury.com/foe"
   :license {:name "Eclipse Public License"
@@ -6,9 +6,9 @@
   :dependencies
     [[org.clojure/clojure "1.6.0"]
      [ring "1.3.1"]
-     [foe/foe-authentication "0.0.3"]
-     [foe/foe-authorization "0.0.3"
-      foe/foe-oauth2 "0.0.3"]]
+     [foe/foe-authentication "0.0.4"]
+     [foe/foe-authorization "0.0.4"]
+     [foe/foe-oauth2 "0.0.4"]]
   :plugins
     [[lein-sub "0.2.4"]]
   :sub
