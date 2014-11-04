@@ -1,0 +1,6 @@
+{
+  "phabricator.uri": "http://phabricator.corp.standardtreasury.com/",
+  "repository.callsign": "FOE",
+  "project.name": "FOE",
+  "load": ["../devtools/arcanist"]
+}
