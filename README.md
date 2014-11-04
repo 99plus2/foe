@@ -1,18 +1,21 @@
+
 # Foe
 
 A Clojure library designed for easy and flexible authentication and
 authorization, especially in ring-based applications.
 
-Consists of foe-authentication, foe-authorization, and a series of
-auth-specific libraries, incuding foe-oauth2.
+Consists of authentication, authorization, and a series of
+auth-specific libraries, incuding oauth2.
 
 ## Usage
 
 To install:
-    lein sub install && lein install
+
+    lein install
 
 To test:
-    lein sub test
+
+    lein test
 
 ## License
 

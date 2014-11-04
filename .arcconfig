@@ -2,5 +2,10 @@
   "phabricator.uri": "http://phabricator.corp.standardtreasury.com/",
   "repository.callsign": "FOE",
   "project.name": "FOE",
-  "load": ["../devtools/arcanist"]
+  "load": ["../devtools/arcanist"],
+  "lint.engine": "EastwoodLintEngine",
+  "unit.engine": "LeiningenTestEngine",
+  "unit.test_paths": ["test"],
+  "events.listeners": ["GitHubDiffEventListener", "GitHubLandEventListener"]
+
 }

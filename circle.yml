@@ -1,0 +1,22 @@
+dependencies:
+  pre:
+    - git clone https://github.com/phacility/libphutil.git ../libphutil
+    - git clone https://github.com/phacility/arcanist.git ../arcanist
+    - git clone git@github.com:standardtreasury-internal/devtools.git ../devtools
+
+machine:
+  python:
+    version: 2.7.5
+
+test:
+  pre:
+    - bash ../devtools/ci/install-arc-certificate.sh
+  override:
+    - lein trampoline test && python ../devtools/ci/post_circleci_results_to_phabricator.py SUCCESS || python ../devtools/ci/post_circleci_results_to_phabricator.py FAILURE
+
+deployment:
+  staging:
+    branch:
+      - master
+    commands:
+      - lein deploy internal
