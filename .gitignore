@@ -10,3 +10,4 @@ pom.xml.asc
 */.lein-*
 /.nrepl-port
 .lein-*
+/src/foe/version.clj
