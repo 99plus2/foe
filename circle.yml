@@ -12,7 +12,7 @@ test:
   pre:
     - bash ../devtools/ci/install-arc-certificate.sh
   override:
-    - lein trampoline test && python ../devtools/ci/post_circleci_results_to_phabricator.py SUCCESS || python ../devtools/ci/post_circleci_results_to_phabricator.py FAILURE
+    - ../devtools/ci/run-test-and-report
 
 deployment:
   staging:
