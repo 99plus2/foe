@@ -12,12 +12,15 @@
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
+  (GET "/version" [] "v1")
   (GET "/name" request (:name (:user request)))
   (route/not-found "Not Found"))
 
 (def test-app
   (-> test-routes
-      (authn/wrap-authentication fake-auth :allow-anonymous true)))
+      (authn/wrap-authentication fake-auth
+                                 :allow-anonymous true
+                                 :whitelist #{"/version"})))
 
 (deftest test-wrap-authentication
   (testing "Redirect works"
@@ -27,6 +30,11 @@
   (testing "404 works"
     (let [response (test-app (mock/request :get "/foo"))]
       (is (= (:status response) 404))))
+
+  (testing "Whitelist works"
+    (let [response (test-app (mock/request :get "/version"))]
+      (is (= 200 (:status response)))
+      (is (= "v1" (:body response)))))
 
   (testing "Return the username"
     (let [response (test-app (mock/request :get "/name"))]
