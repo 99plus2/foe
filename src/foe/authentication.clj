@@ -3,9 +3,10 @@
    [ring.util.request :as req]
    [ring.util.response :as resp]))
 
-(defn- respond-401 []
+(defn- respond-401
+  [message]
   {:status 401
-   :body   "Unauthorized"})
+   :body   message})
 
 (defn- redirect-or-401
   [handler request allow-anonymous redirect-url whitelist]
@@ -14,7 +15,7 @@
       (handler request)
       (if redirect-url
           (resp/redirect redirect-url)
-          (respond-401))))
+          (respond-401 "Unauthorized"))))
 
 (defn session-auth-fn
   [request]
@@ -30,7 +31,10 @@
                                  redirect-url nil
                                  whitelist #{}}}]
   (fn [request]
-    (let [user (auth-fn request)]
-      (if user
-        (handler (assoc request :user user))
-        (redirect-or-401 handler request allow-anonymous redirect-url whitelist)))))
+    (try
+      (let [user (auth-fn request)]
+        (if user
+          (handler (assoc request :user user))
+          (redirect-or-401 handler request allow-anonymous redirect-url whitelist)))
+      (catch Exception e
+        (respond-401 (.getMessage e))))))

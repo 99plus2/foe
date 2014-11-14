@@ -10,6 +10,10 @@
   [request]
   {:name "Keith" :roles ["user"]})
 
+(defn- auth-with-exceptions
+  [request]
+  (throw (Exception. "Some valid reason")))
+
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
   (GET "/version" [] "v1")
@@ -21,6 +25,10 @@
       (authn/wrap-authentication fake-auth
                                  :allow-anonymous true
                                  :whitelist #{"/version"})))
+
+(def test-app-with-exceptions
+  (-> test-routes
+      (authn/wrap-authentication auth-with-exceptions)))
 
 (deftest test-wrap-authentication
   (testing "Redirect works"
@@ -39,7 +47,12 @@
   (testing "Return the username"
     (let [response (test-app (mock/request :get "/name"))]
       (is (= (:status response) 200))
-      (is (= (:body response) "Keith")))))
+      (is (= (:body response) "Keith"))))
+
+  (testing "Thrown exceptions are caught and 401'd"
+    (let [response (test-app-with-exceptions (mock/request :get "/name"))]
+      (is (= (:status response) 401))
+      (is (= (:body response) "Some valid reason")))))
 
 (deftest test-session-auth-fn
   (testing "Session-auth-fn returns user"
