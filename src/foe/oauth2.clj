@@ -1,9 +1,10 @@
 (ns foe.oauth2
-  (:require [clj-http.client :as client]
-            [ring.util.codec :as codec]
-            [clojure.walk :as walk]
-            [ring.util.response :as resp]
-            [clj-http.client :as client]))
+  (:require
+    [clj-http.client :as client]
+    [clojure.walk :as walk]
+    [ring.middleware.params :refer [params-request]]
+    [ring.util.codec :as codec]
+    [ring.util.response :as resp]))
 
 (defn fetch-access-token
   [token-url client-id client-secret redirect-uri code]
@@ -31,10 +32,21 @@
     (-> (resp/redirect "/")
         (assoc :session session))))
 
-(defn wrap-oauth2 [handler config]
+(defn ensure-query-params
+  [request]
+  (if (contains? request :query-params)
+    request
+    (params-request request)))
+
+(defn get-query-param
+  [request k]
+  (get-in (ensure-query-params request) [:query-params k]))
+
+(defn wrap-oauth2
+  [handler config]
   (fn [request]
     (let [req-path (:uri request)
-          code     (get (:query-params request) "code")]
+          code     (get-query-param request "code")]
       ;; TODO - match this better - we need to match the
       ;;        path of the redirect-url and the request path
       (if (= req-path "/oauth/authorized")
