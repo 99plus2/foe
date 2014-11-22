@@ -1,4 +1,4 @@
-(ns foe.exceptions)
+(ns foe.exceptions
+  "Different types of reasonable exceptions.")
 
-;; Different types of reasonable exceptions
-::failed-auth
+(def failed-auth ::failed-auth)

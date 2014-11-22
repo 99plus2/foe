@@ -5,6 +5,7 @@
             [compojure.route :as route]
             [compojure.core :refer :all]
             [foe.authentication :as authn]
+            [foe.exceptions :as exceptions]
             [slingshot.slingshot :refer [throw+]]))
 
 (defn- fake-auth
@@ -13,7 +14,7 @@
 
 (defn- auth-with-exceptions
   [request]
-  (throw+ {:type :foe.exceptions/failed-auth :message "Some valid reason"}))
+  (throw+ {:type exceptions/failed-auth :message "Some valid reason"}))
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
