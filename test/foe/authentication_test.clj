@@ -4,7 +4,8 @@
             [ring.mock.request :as mock]
             [compojure.route :as route]
             [compojure.core :refer :all]
-            [foe.authentication :as authn]))
+            [foe.authentication :as authn]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn- fake-auth
   [request]
@@ -12,7 +13,7 @@
 
 (defn- auth-with-exceptions
   [request]
-  (throw (Exception. "Some valid reason")))
+  (throw+ {:type :foe.exceptions/failed-auth :message "Some valid reason"}))
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))

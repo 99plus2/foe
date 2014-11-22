@@ -1,7 +1,8 @@
 (ns foe.authentication
   (:require
-   [ring.util.request :as req]
-   [ring.util.response :as resp]))
+    [ring.util.request :as req]
+    [ring.util.response :as resp]
+    [slingshot.slingshot :as slingshot]))
 
 (defn- respond-401
   [message]
@@ -31,10 +32,10 @@
                                  redirect-url nil
                                  whitelist #{}}}]
   (fn [request]
-    (try
+    (slingshot/try+
       (let [user (auth-fn request)]
         (if user
           (handler (assoc request :user user))
           (redirect-or-401 handler request allow-anonymous redirect-url whitelist)))
-      (catch Exception e
-        (respond-401 (.getMessage e))))))
+      (catch [:type :foe.exceptions/failed-auth] {:keys [message]}
+        (respond-401 message)))))
