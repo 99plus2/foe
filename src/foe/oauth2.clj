@@ -30,7 +30,8 @@
         user    {:name token :roles ["user"]}
         session (assoc (:session request) :user user)]
     (-> (resp/redirect "/")
-        (assoc :session session))))
+        (assoc :session session)
+        (resp/set-cookie (:token-cookie config "foe_bearer_token") token))))
 
 (defn ensure-query-params
   [request]

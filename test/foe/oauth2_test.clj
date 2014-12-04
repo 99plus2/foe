@@ -34,6 +34,7 @@
                  {:status  302
                   :headers {"Location" "/"}
                   :body    ""
+                  :cookies {"foe_bearer_token" {:value "TOKEN"}}
                   :session {:user {:name "TOKEN" :roles ["user"]}}})))
         (testing "oauth request params pre-processed"
           (let [query-params {"code" oauth-code "foo" "bar"}]
@@ -41,4 +42,5 @@
                    {:status  302
                     :headers {"Location" "/"}
                     :body    ""
+                    :cookies {"foe_bearer_token" {:value "TOKEN"}}
                     :session {:user {:name "TOKEN" :roles ["user"]}}}))))))))
