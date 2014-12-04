@@ -13,7 +13,7 @@
     (condp = uri
       "/works"  {:name "Keith" :roles ["user"]}
       "/noworks" {:name "Keith" :roles ["not a user"]}
-      nil)))
+      {:error "Unauthorized"})))
 
 (defroutes app-routes
   (GET "/" [] (resp/redirect "/index.html"))

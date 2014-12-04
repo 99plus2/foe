@@ -1,8 +1,7 @@
 (ns foe.authentication
   (:require
     [ring.util.request :as req]
-    [ring.util.response :as resp]
-    [slingshot.slingshot :as slingshot]))
+    [ring.util.response :as resp]))
 
 (defn- respond-401
   [message]
@@ -30,25 +29,33 @@
 (defn wrap-authentication
   "The wrap-authentication function attempts to authenticate the HTTP request using the supplied
    function auth-fn. If the authentication fails, a 401 will be returned, unless:
+
        - the request is whitelisted by the whitelist function, OR
        - allow-anonymous is true.
 
-   When authentication is sccuessful, the request will include a new :user key, as supplied by the
+   The auth-fn function should return a map. If authentication is *NOT* successful, the
+   map should contain a top-level `:error` key, with a string value indicating the reason
+   for the failed authentication. The abscence of the `:error` key indicates successful
+   authentication. On success, the request will include a new :user key, as supplied by the
    auth-fn function.
 
-   The auth-fn function should return a map representing the authenticated user. When used with
-   foe.authorization, this user map should include a :name and :roles key."
+   Examples:
+
+        - PASS: {:name \"Mike\" :roles [\"user\"]}
+        - FAIL: {:error \"Error message as string\"}
+
+   When used with foe.authorization, this user map should include a :name and :roles key."
   [handler auth-fn & {:keys [allow-anonymous redirect-url whitelist]
                       :or   {allow-anonymous false
                              redirect-url nil
                              whitelist #{}}}]
   (fn [request]
     (if (whitelist (req/path-info request))
-      (handler request))
-      (slingshot/try+
-        (let [user (auth-fn request)]
-          (if user
-            (handler (assoc request :user user))
-            (redirect-or-401 handler request allow-anonymous redirect-url "Unauthorized")))
-        (catch [:type :foe.exceptions/failed-auth] {:keys [message]}
-          (redirect-or-401 handler request allow-anonymous redirect-url message)))))
+      (handler request)
+      (let [{:keys [error] :as auth-map} (auth-fn request)]
+        (if error
+          (redirect-or-401 handler request allow-anonymous redirect-url error)
+          (do
+            ;; :name and :roles are required for authentication to work properly
+            (assert (every? identity [(:name auth-map) (:roles auth-map)]))
+            (handler (assoc request :user auth-map))))))))

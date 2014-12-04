@@ -4,17 +4,19 @@
             [ring.mock.request :as mock]
             [compojure.route :as route]
             [compojure.core :refer :all]
-            [foe.authentication :as authn]
-            [foe.exceptions :as exceptions]
-            [slingshot.slingshot :refer [throw+]]))
+            [foe.authentication :as authn]))
 
 (defn- fake-auth
   [request]
   {:name "Keith" :roles ["user"]})
 
-(defn- auth-with-exceptions
+(defn- auth-that-fails
   [request]
-  (throw+ {:type exceptions/failed-auth :message "Some valid reason"}))
+  {:error "Some valid reason"})
+
+(defn- auth-without-role
+  [request]
+  {:name "Mike"})
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
@@ -28,9 +30,13 @@
                                  :allow-anonymous true
                                  :whitelist #{"/version"})))
 
-(def test-app-with-exceptions
+(def test-app-with-errors
   (-> test-routes
-      (authn/wrap-authentication auth-with-exceptions)))
+      (authn/wrap-authentication auth-that-fails)))
+
+(def test-app-without-role
+  (-> test-routes
+      (authn/wrap-authentication auth-without-role)))
 
 (deftest test-wrap-authentication
   (testing "Redirect works"
@@ -51,10 +57,13 @@
       (is (= (:status response) 200))
       (is (= (:body response) "Keith"))))
 
-  (testing "Thrown exceptions are caught and 401'd"
-    (let [response (test-app-with-exceptions (mock/request :get "/name"))]
+  (testing "Errors are caught and 401'd"
+    (let [response (test-app-with-errors (mock/request :get "/name"))]
       (is (= (:status response) 401))
-      (is (= (:body response) "Some valid reason")))))
+      (is (= (:body response) "Some valid reason"))))
+
+  (testing "Auth without :roles 500's"
+    (is (thrown? AssertionError (test-app-without-role (mock/request :get "/name"))))))
 
 (deftest test-session-auth-fn
   (testing "Session-auth-fn returns user"

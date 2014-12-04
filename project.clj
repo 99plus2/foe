@@ -8,7 +8,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring "1.3.1"]
-                 [slingshot "0.12.1"]
                  [clj-http "1.0.0"]]
   :repositories {"internal" {:url "s3p://standard-releases/releases/"
                              :username :env
