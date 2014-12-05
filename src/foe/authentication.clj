@@ -24,7 +24,8 @@
         user    (:user session)]
     (if (and (contains? user :name)
              (contains? user :roles))
-        user)))
+        user
+        {:error "Unauthorized"})))
 
 (defn wrap-authentication
   "The wrap-authentication function attempts to authenticate the HTTP request using the supplied

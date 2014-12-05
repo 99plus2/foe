@@ -69,4 +69,9 @@
   (testing "Session-auth-fn returns user"
     (let [request {:session {:user {:name "Keith" :roles ["user"]}}}
           user    (authn/session-auth-fn request)]
-      (is (= (:name user) "Keith")))))
+      (is (= (:name user) "Keith"))))
+
+  (testing "Session-auth-fn returns error on failure"
+    (let [request {:session {}}
+          response (authn/session-auth-fn request)]
+      (is (= (:error response) "Unauthorized")))))
