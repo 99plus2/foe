@@ -31,7 +31,7 @@
         session (assoc (:session request) :user user)]
     (-> (resp/redirect "/")
         (assoc :session session)
-        (resp/set-cookie (:token-cookie config "foe_bearer_token") token))))
+        (resp/set-cookie (:token-cookie config "foe-bearer-token") token {:path "/"}))))
 
 (defn ensure-query-params
   [request]
