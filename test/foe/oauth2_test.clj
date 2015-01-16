@@ -23,7 +23,7 @@
     (with-redefs [foe.oauth2/fetch-access-token
                   (fn [& args]
                     (is (= (last args) oauth-code))
-                    "TOKEN")]
+                    {:access_key "TOKEN" :guid 1})]
       (testing "unrelated request"
         (let [request {:uri "/some/path" :query-string "foo=bar"}]
           (is (= ((oauth2/wrap-oauth2 handler {}) request) {:test 1}))))
@@ -35,7 +35,7 @@
                   :headers {"Location" "/"}
                   :body    ""
                   :cookies {"foe-bearer-token" {:value "TOKEN" :path "/"}}
-                  :session {:user {:name "TOKEN" :roles ["user"]}}})))
+                  :session {:user {:name "TOKEN" :roles ["user"] :guid 1}}})))
         (testing "oauth request params pre-processed"
           (let [query-params {"code" oauth-code "foo" "bar"}]
             (is (= ((oauth2/wrap-oauth2 handler {}) (assoc request :query-params query-params))
@@ -43,4 +43,4 @@
                     :headers {"Location" "/"}
                     :body    ""
                     :cookies {"foe-bearer-token" {:value "TOKEN" :path "/"}}
-                    :session {:user {:name "TOKEN" :roles ["user"]}}}))))))))
+                    :session {:user {:name "TOKEN" :roles ["user"] :guid 1}}}))))))))

@@ -11,8 +11,8 @@
   [request]
   (let [uri (:uri request)]
     (condp = uri
-      "/works"  {:name "Keith" :roles ["user"]}
-      "/noworks" {:name "Keith" :roles ["not a user"]}
+      "/works"  {:name "Keith" :roles ["user"] :guid 1}
+      "/noworks" {:name "Keith" :roles ["not a user"] :guid 1}
       {:error "Unauthorized"})))
 
 (defroutes app-routes

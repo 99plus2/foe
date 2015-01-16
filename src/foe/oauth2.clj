@@ -15,19 +15,17 @@
                                             :client_secret client-secret
                                             :code          code
                                             :redirect_uri  redirect-uri}})]
-    (:access_token (:body response))))
+    (:body response)))
 
 (defn get-token
   [handler request config code]
-  (let [token (fetch-access-token (:token-url config)
-                                  (:client-id config)
-                                  (:client-secret config)
-                                  (:redirect-uri config)
-                                  code)
-        ;; TODO - the token shouldn't be the name
-        ;;        We need to use open id or include the
-        ;;        name in the token response.
-        user    {:name token :roles ["user"]}
+  (let [response (fetch-access-token (:token-url config)
+                                     (:client-id config)
+                                     (:client-secret config)
+                                     (:redirect-uri config)
+                                     code)
+        token (:access_key response)
+        user {:name token :roles ["user"] :guid (:guid response)}
         session (assoc (:session request) :user user)]
     (-> (resp/redirect "/")
         (assoc :session session)

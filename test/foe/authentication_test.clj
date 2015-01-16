@@ -8,7 +8,7 @@
 
 (defn- fake-auth
   [request]
-  {:name "Keith" :roles ["user"]})
+  {:name "Keith" :roles ["user"] :guid 1})
 
 (defn- auth-that-fails
   [request]
@@ -16,7 +16,7 @@
 
 (defn- auth-without-role
   [request]
-  {:name "Mike"})
+  {:name "Mike" :guid 2})
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
@@ -67,7 +67,7 @@
 
 (deftest test-session-auth-fn
   (testing "Session-auth-fn returns user"
-    (let [request {:session {:user {:name "Keith" :roles ["user"]}}}
+    (let [request {:session {:user {:name "Keith" :roles ["user"] :guid 1}}}
           user    (authn/session-auth-fn request)]
       (is (= (:name user) "Keith"))))
 
