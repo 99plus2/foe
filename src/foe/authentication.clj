@@ -1,6 +1,5 @@
 (ns foe.authentication
   (:require
-    [ring.util.request :as req]
     [ring.util.response :as resp]))
 
 (defn- respond-401
@@ -52,7 +51,7 @@
                              redirect-url nil
                              whitelist #{}}}]
   (fn [request]
-    (if (whitelist (req/path-info request))
+    (if (whitelist request)
       (handler request)
       (let [{:keys [error] :as auth-map} (auth-fn request)]
         (if error

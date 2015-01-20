@@ -24,11 +24,15 @@
   (GET "/name" request (:name (:user request)))
   (route/not-found "Not Found"))
 
+(defn- stub-whitelist
+  [request]
+  (= (:path request) "/version"))
+
 (def test-app
   (-> test-routes
       (authn/wrap-authentication fake-auth
                                  :allow-anonymous true
-                                 :whitelist #{"/version"})))
+                                 :whitelist stub-whitelist)))
 
 (def test-app-with-errors
   (-> test-routes
