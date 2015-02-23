@@ -9,12 +9,13 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring "1.3.1"]
                  [clj-http "1.0.0"]]
-  :repositories {"internal" {:url "s3p://standard-releases/releases/"
-                             :username :env
-                             :passphrase :env
-                             :sign-releases false}}
+  :repositories
+    {"internal" {:url "s3://standard-releases/releases/"
+                 :username :env/aws_access_key_id
+                 :passphrase :env/aws_secret_access_key
+                 :sign-releases false}}
   :plugins [[lein-ancient "0.5.5"]
-            [s3-wagon-private "1.1.2"]
+            [lein-maven-s3-wagon "0.2.4"]
             [jonase/eastwood "0.1.4"]
             [lein-test-out "0.3.1"]
             [org.clojars.cvillecsteele/lein-git-version "1.0.2"]]
