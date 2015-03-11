@@ -25,7 +25,7 @@
                                      (:redirect-uri config)
                                      code)
         token (:access_key response)
-        user {:name token :roles ["user"] :guid (:guid response)}
+        user {:roles ["user"] :guid (:guid response)}
         session (assoc (:session request) :user user)]
     (-> (resp/redirect "/")
         (assoc :session session)

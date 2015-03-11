@@ -18,12 +18,11 @@
 (defn session-auth-fn
   "The session-auth-fn function will attempt to authenticate a request
    using the session. If the session contains a :user
-   with :role, :name, and :guid, authentication was successful."
+   with :role and :guid, authentication was successful."
   [request]
   (let [session (:session request)
         user    (:user session)]
-    (if (and (contains? user :name)
-             (contains? user :roles)
+    (if (and (contains? user :roles)
              (contains? user :guid))
         user
         {:error "Unauthorized"})))
@@ -45,11 +44,11 @@
 
    Examples:
 
-        - PASS: {:name \"Mike\" :roles [\"user\"] :guid 1}
+        - PASS: {:guid \"123-456\" :roles [\"user\"] :guid 1}
         - FAIL: {:error \"Error message as string\"}
 
    When used with foe.authorization, this user map should
-   include :name, :roles, and :guid keys."
+   include :roles and :guid keys."
   [handler auth-fn & {:keys [allow-anonymous redirect-url whitelist]
                       :or   {allow-anonymous false
                              redirect-url nil
@@ -61,8 +60,7 @@
         (if error
           (redirect-or-401 handler request allow-anonymous redirect-url error)
           (do
-            ;; :name and :roles are required for authentication to work properly
-            (assert (every? identity [(:name auth-map)
-                                      (:roles auth-map)
+            ;; :guid and :roles are required for authentication to work properly
+            (assert (every? identity [(:roles auth-map)
                                       (:guid auth-map)]))
             (handler (assoc request :user auth-map))))))))

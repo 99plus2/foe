@@ -35,7 +35,7 @@
                   :headers {"Location" "/"}
                   :body    ""
                   :cookies {"foe-bearer-token" {:value "TOKEN" :path "/"}}
-                  :session {:user {:name "TOKEN" :roles ["user"] :guid 1}}})))
+                  :session {:user {:roles ["user"] :guid 1}}})))
         (testing "oauth request params pre-processed"
           (let [query-params {"code" oauth-code "foo" "bar"}]
             (is (= ((oauth2/wrap-oauth2 handler {}) (assoc request :query-params query-params))
@@ -43,4 +43,4 @@
                     :headers {"Location" "/"}
                     :body    ""
                     :cookies {"foe-bearer-token" {:value "TOKEN" :path "/"}}
-                    :session {:user {:name "TOKEN" :roles ["user"] :guid 1}}}))))))))
+                    :session {:user {:roles ["user"] :guid 1}}}))))))))

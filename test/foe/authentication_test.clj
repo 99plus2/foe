@@ -8,7 +8,7 @@
 
 (defn- fake-auth
   [request]
-  {:name "Keith" :roles ["user"] :guid 1})
+  {:roles ["user"] :guid 1})
 
 (defn- auth-that-fails
   [request]
@@ -16,12 +16,12 @@
 
 (defn- auth-without-role
   [request]
-  {:name "Mike" :guid 2})
+  {:guid 2})
 
 (defroutes test-routes
   (GET "/" [] (resp/redirect "/index.html"))
   (GET "/version" [] "v1")
-  (GET "/name" request (:name (:user request)))
+  (GET "/name" request {:body (str (:guid (:user request)))})
   (route/not-found "Not Found"))
 
 (defn- stub-whitelist
@@ -58,8 +58,8 @@
 
   (testing "Return the username"
     (let [response (test-app (mock/request :get "/name"))]
-      (is (= (:status response) 200))
-      (is (= (:body response) "Keith"))))
+      (is (= 200 (:status response)))
+      (is (= "1" (:body response)))))
 
   (testing "Errors are caught and 401'd"
     (let [response (test-app-with-errors (mock/request :get "/name"))]
@@ -71,9 +71,9 @@
 
 (deftest test-session-auth-fn
   (testing "Session-auth-fn returns user"
-    (let [request {:session {:user {:name "Keith" :roles ["user"] :guid 1}}}
+    (let [request {:session {:user {:roles ["user"] :guid 137}}}
           user    (authn/session-auth-fn request)]
-      (is (= (:name user) "Keith"))))
+      (is (= (:guid user) 137))))
 
   (testing "Session-auth-fn returns error on failure"
     (let [request {:session {}}
