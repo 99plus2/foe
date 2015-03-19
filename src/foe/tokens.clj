@@ -7,9 +7,8 @@
   checks to see if it is present in the header, since that's the only
   recommended method and therefore the only one we care about."
   [request-map]
-  (let [auth-header (-> request-map
+  (if-let [auth-header (-> request-map
                         :headers
                         (get "authorization"))]
-    (if auth-header
-      (let [[auth-type auth-val] (clojure.string/split auth-header #" ")]
-        (if (= auth-type "Bearer") auth-val)))))
+    (let [[auth-type auth-val] (clojure.string/split auth-header #" ")]
+      (if (= auth-type "Bearer") auth-val))))

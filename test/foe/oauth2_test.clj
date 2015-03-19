@@ -38,7 +38,8 @@
                   :session {:user {:roles ["user"] :guid 1}}})))
         (testing "oauth request params pre-processed"
           (let [query-params {"code" oauth-code "foo" "bar"}]
-            (is (= ((oauth2/wrap-oauth2 handler {}) (assoc request :query-params query-params))
+            (is (= ((oauth2/wrap-oauth2 handler {})
+                    (assoc request :query-params query-params))
                    {:status  302
                     :headers {"Location" "/"}
                     :body    ""

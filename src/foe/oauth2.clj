@@ -7,7 +7,7 @@
     [ring.util.response :as resp]))
 
 (defn fetch-access-token
-  [token-url client-id client-secret redirect-uri code]
+  [{:keys [token-url client-id client-secret redirect-uri]} code]
   (let [response (client/post
                    token-url {:as          :json
                               :form-params {:grant_type    "authorization_code"
@@ -19,17 +19,15 @@
 
 (defn get-token
   [handler request config code]
-  (let [response (fetch-access-token (:token-url config)
-                                     (:client-id config)
-                                     (:client-secret config)
-                                     (:redirect-uri config)
-                                     code)
+  (let [response (fetch-access-token config code)
         token (:access_key response)
         user {:roles ["user"] :guid (:guid response)}
         session (assoc (:session request) :user user)]
     (-> (resp/redirect "/")
         (assoc :session session)
-        (resp/set-cookie (:token-cookie config "foe-bearer-token") token {:path "/"}))))
+        (resp/set-cookie (:token-cookie config "foe-bearer-token")
+                         token
+                         {:path "/"}))))
 
 (defn ensure-query-params
   [request]
@@ -48,6 +46,7 @@
           code     (get-query-param request "code")]
       ;; TODO - match this better - we need to match the
       ;;        path of the redirect-url and the request path
+      ;; https://github.com/standardtreasury-internal/foe/issues/5
       (if (= req-path "/oauth/authorized")
         (get-token handler request config code)
         (handler request)))))
@@ -55,12 +54,8 @@
 (defn create-authorization-url
   "Creates the url for an authorization request.
    See: http://tools.ietf.org/html/rfc6749#section-4.1.1"
-  [config]
-  (let [client-id (:client-id config)
-        authorize-url (:authorize-url config)
-        scopes (:scopes config)
-        state "stateTBD"
-        redirect-uri (:redirect-uri config)]
+  [{:keys [client-id authorize-url scopes redirect-uri]}]
+  (let [state "stateTBD"]
     (str authorize-url
          "?"
          (client/generate-query-string {"client_id"     client-id
