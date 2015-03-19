@@ -5,12 +5,19 @@
 (deftest create-authorization-url-test
   (let [config {:client-id    "foo"
                 :authorize-url "http://wut.com/oauth/authorize"
-                :scopes       "wut bar"
+                :scope       "wut bar"
                 :state        "IAMSTATEIAMRANDOM"
                 :redirect-uri "http://example.com/login"}
-        url (oauth2/create-authorization-url config)]
-    (is (= "http://wut.com/oauth/authorize?client_id=foo&state=stateTBD&redirect_uri=http%3A%2F%2Fexample.com%2Flogin&scope=wut+bar&response_type=code"
-           url))))
+        url (oauth2/create-authorization-url config)
+        config-without-scope {:client-id "foo2"
+                              :authorize-url "http://wut.com/oauth/authorize"
+                              :state "IAMANOTHERSTATE"
+                              :redirect-uri "http://example.com/login"}
+        url2 (oauth2/create-authorization-url config-without-scope)]
+    (is (= "http://wut.com/oauth/authorize?scope=wut+bar&redirect_uri=http%3A%2F%2Fexample.com%2Flogin&state=IAMSTATEIAMRANDOM&client_id=foo&response_type=code"
+           url))
+    (is (= "http://wut.com/oauth/authorize?redirect_uri=http%3A%2F%2Fexample.com%2Flogin&state=IAMANOTHERSTATE&client_id=foo2&response_type=code"
+           url2))))
 
 (deftest process-authorization-response-test
   (let [response (oauth2/process-authorization-response "https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz")]
