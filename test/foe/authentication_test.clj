@@ -67,7 +67,8 @@
       (is (= (:body response) "Some valid reason"))))
 
   (testing "Auth without :roles 500's"
-    (is (thrown? AssertionError (test-app-without-role (mock/request :get "/name"))))))
+    (is (thrown? AssertionError
+                 (test-app-without-role (mock/request :get "/name"))))))
 
 (deftest test-session-auth-fn
   (testing "Session-auth-fn returns user"

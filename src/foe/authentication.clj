@@ -20,12 +20,11 @@
    using the session. If the session contains a :user
    with :role and :guid, authentication was successful."
   [request]
-  (let [session (:session request)
-        user    (:user session)]
+  (let [user (get-in request [:session :user])]
     (if (and (contains? user :roles)
              (contains? user :guid))
-        user
-        {:error "Unauthorized"})))
+    user
+    {:error "Unauthorized"})))
 
 (defn wrap-authentication
   "The wrap-authentication function attempts to authenticate the HTTP
@@ -56,11 +55,10 @@
   (fn [request]
     (if (whitelist request)
       (handler request)
-      (let [{:keys [error] :as auth-map} (auth-fn request)]
+      (let [{:keys [error guid roles] :as auth-map} (auth-fn request)]
         (if error
           (redirect-or-401 handler request allow-anonymous redirect-url error)
           (do
             ;; :guid and :roles are required for authentication to work properly
-            (assert (every? identity [(:roles auth-map)
-                                      (:guid auth-map)]))
+            (assert (every? identity [roles guid]))
             (handler (assoc request :user auth-map))))))))
