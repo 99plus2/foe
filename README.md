@@ -1,4 +1,3 @@
-
 # Foe
 
 A Clojure library designed for easy and flexible authentication and
@@ -9,17 +8,21 @@ auth-specific libraries, incuding oauth2.
 
 ## Usage
 
-To install:
+To install, add the following to your project's `:dependencies` key:
 
-    lein install
+```clojure
+[foe "0.2.0"]
+```
 
-To test:
+## Testing
+
+To run the Foe tests, just:
 
     lein test
 
 ## License
 
-Copyright © 2014 Standard Treasury
+Copyright © 2015 Standard Treasury
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
