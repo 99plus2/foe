@@ -2,6 +2,7 @@
   (:require
     [clj-http.client :as client]
     [clojure.walk :as walk]
+    [foe.util :refer [?assoc]]
     [ring.middleware.params :refer [params-request]]
     [ring.util.codec :as codec]
     [ring.util.response :as resp]))
@@ -54,15 +55,15 @@
 (defn create-authorization-url
   "Creates the url for an authorization request.
    See: http://tools.ietf.org/html/rfc6749#section-4.1.1"
-  [{:keys [client-id authorize-url scopes redirect-uri]}]
-  (let [state "stateTBD"]
+  [{:keys [client-id authorize-url redirect-uri scope state]}]
+  (let [query-params (-> {"client_id" client-id
+                          "response_type" "code"}
+                          (?assoc "state" state
+                                  "redirect_uri" redirect-uri
+                                  "scope" scope))]
     (str authorize-url
          "?"
-         (client/generate-query-string {"client_id"     client-id
-                                        "state"         state
-                                        "redirect_uri"  redirect-uri
-                                        "scope"         scopes
-                                        "response_type" "code"}))))
+         (client/generate-query-string query-params))))
 
 (defn process-authorization-response
   "Parses the response URL that issues a code.
