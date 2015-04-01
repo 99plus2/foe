@@ -11,7 +11,7 @@ auth-specific libraries, incuding oauth2.
 To install, add the following to your project's `:dependencies` key:
 
 ```clojure
-[foe "0.2.0"]
+[foe "0.3.0"]
 ```
 
 ## Example
