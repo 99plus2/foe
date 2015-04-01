@@ -20,7 +20,7 @@ Consider a Clams app where we want to authn/z a request.  We can do
 that in one step using Foe, assuming that each request contains the
 needed user information:
 
-```
+```clojure
 ;;; ...
 
 (require '[foe.authentication :refer [wrap-authentication]])
