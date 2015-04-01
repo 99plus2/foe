@@ -14,6 +14,34 @@ To install, add the following to your project's `:dependencies` key:
 [foe "0.2.0"]
 ```
 
+## Example
+
+Consider a Clams app where we want to authn/z a request.  We can do
+that in one step using Foe, assuming that each request contains the
+needed user information:
+
+```
+;;; ...
+
+(require '[foe.authentication :refer [wrap-authentication]])
+(require '[clams.app :as app])
+
+(defn- find-user-from-request [req]
+  ...)
+
+(defn- my-auth-function [req]
+  (if-let [user (find-user-from-request req)]
+    {:roles ["user"] :guid (:id user)}
+    {:error "Unauthorized"}))
+
+(defn wrap-auth [app]
+  (wrap-authentication app my-auth-function))
+
+(defn -main [& args]
+  (app/start-server 'sample {:middleware [wrap-auth]}))
+
+```
+
 ## Testing
 
 To run the Foe tests, just:
