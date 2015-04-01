@@ -4,7 +4,7 @@ A Clojure library designed for easy and flexible authentication and
 authorization, especially in ring-based applications.
 
 Consists of authentication, authorization, and a series of
-auth-specific libraries, incuding oauth2.
+auth-specific libraries, including oauth2.
 
 ## Usage
 
@@ -16,7 +16,7 @@ To install, add the following to your project's `:dependencies` key:
 
 ## Example
 
-Consider a Clams app where we want to authn/z a request.  We can do
+Consider a [Clams](https://github.com/standardtreasury/clams) app where we want to authn/z a request.  We can do
 that in one step using Foe, assuming that each request contains the
 needed user information:
 
